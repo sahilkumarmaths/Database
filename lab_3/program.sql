@@ -286,3 +286,103 @@ select p.pid from Parts p where not exists
 /*
 Empty set (0.00 sec)*/
 
+/*Ans-13*/
+select max(cost), pid, color from (select  p.pid, p.color, c.cost from Catalog  c Inner Join  Parts p  on c.pid = p.pid order by color, cost Desc)T group by color order by pid ;
+/*+------------+-----+--------+
+| max(cost)  | pid | color  |
++------------+-----+--------+
+|       1200 |   4 | Green  |
+|         50 |   5 | Yellow |
+| 9999999999 |   6 | Blue   |
+|   99999999 |   7 | White  |
+| 9999999999 |   8 | Red    |
++------------+-----+--------+
+5 rows in set (0.00 sec)*/
+
+/*Ans-14*/
+select X.pid from  (select  max(cost) as price , pid, sid  from Catalog group by pid )X, (select sid from Suppliers where city = "Dispur" or city= "Guwahati" )Y where X.sid = Y.sid ;
+/*
++-----+
+| pid |
++-----+
+|   1 |
+|   3 |
++-----+
+2 rows in set (0.00 sec)*/
+
+/*Ans-15*/
+select distinct s1.pid, s1.sid, s.sname, p1.color, s1.cost from Catalog s1, Catalog s2, Parts p1, Suppliers s where (s1.cost = s2.cost and (s1.sid != s2.sid or s1.pid != s2.pid)) and (s.sid = s1.sid) and (s1.pid = p1.pid) ;
+/*
++-----+-----+------------+--------+------------+
+| pid | sid | sname      | color  | cost       |
++-----+-----+------------+--------+------------+
+|   2 |   3 | Rajnikanth | Red    |       0.05 |
+|   3 |   3 | Rajnikanth | Green  |       0.05 |
+|   4 |   3 | Rajnikanth | Green  |       0.05 |
+|   5 |   3 | Rajnikanth | Yellow |       0.05 |
+|   1 |   3 | Rajnikanth | Red    |       0.05 |
+|   8 |   3 | Rajnikanth | Red    | 9999999999 |
+|   6 |   3 | Rajnikanth | Blue   | 9999999999 |
++-----+-----+------------+--------+------------+
+7 rows in set (0.00 sec)*/
+
+/*Ans-16*/
+DELETE * FROM Catalog where pid = '1';
+INSERT INTO Catalog ( sid,  pid,  cost ) VALUES ('1','1','1500');
+INSERT INTO Catalog ( sid,  pid,  cost ) VALUES ('2','1','1500');
+INSERT INTO Catalog ( sid,  pid,  cost ) VALUES ('3','1','1500');
+INSERT INTO Catalog ( sid,  pid,  cost ) VALUES ('4','1','1500');
+INSERT INTO Catalog ( sid,  pid,  cost ) VALUES ('5','1','1500');
+INSERT INTO Catalog ( sid,  pid,  cost ) VALUES ('6','1','1500');
+INSERT INTO Catalog ( sid,  pid,  cost ) VALUES ('7','1','1500');
+
+SELECT R4.pid,P.color FROM (SELECT pid FROM Catalog GROUP BY pid HAVING ( COUNT(SID) = (SELECT COUNT(SID)  FROM Suppliers) and  MAX(cost)= MIN(cost)))R4,Parts AS P WHERE R4.pid = P.pid;
+/*
++-----+-------+
+| pid | color |
++-----+-------+
+|   1 | Red   |
++-----+-------+
+1 row in set (0.00 sec)*/
+ 
+/*Ans-17*/
+select s.sname, c.cost, p.color from Parts p, Catalog c , Suppliers s where c.sid = s.sid and p.pid = c.pid and c.cost = (select c1.cost from Catalog c1 where c1.sid = s.sid order by c1.cost desc limit 0,1) group by c.sid;
+/*
++-----------------------+------------+--------+
+| sname                 | cost       | color  |
++-----------------------+------------+--------+
+| Mohan Sharma          |       1500 | Red    |
+| Michael Mohit Chouhan |        999 | Green  |
+| Rajnikanth            | 9999999999 | Blue   |
+| Kumar Sanu            |        210 | Red    |
+| Zubeen Barua          |         50 | Yellow |
+| Raj Kapoor            |       1200 | Green  |
+| Imam Siddiquee        |        150 | Red    |
++-----------------------+------------+--------+
+7 rows in set (0.01 sec)*/
+
+/*Ans-18*/
+create view my_view as select S.sname, S.city, P.pname, P.color, C.cost from Catalog C, Parts P, Suppliers S where S.sid=C.sid and P.pid=C.pid order by S.sname, C.cost DESC;
+/*+-----------------------+----------+---------+--------+------------+
+| sname                 | city     | pname   | color  | cost       |
++-----------------------+----------+---------+--------+------------+
+| Imam Siddiquee        | Agra     | Cap     | Red    |        150 |
+| Kumar Sanu            | Kolkata  | Cap     | Red    |        210 |
+| Kumar Sanu            | Kolkata  | Ribbon  | Yellow |         15 |
+| Michael Mohit Chouhan | Bombay   | Shoe    | Green  |        999 |
+| Michael Mohit Chouhan | Bombay   | T Shirt | Green  |        800 |
+| Mohan Sharma          | Dispur   | Cap     | Red    |       1500 |
+| Mohan Sharma          | Dispur   | T Shirt | Green  |        600 |
+| Raj Kapoor            | Patna    | Shoe    | Green  |       1200 |
+| Rajnikanth            | Delhi    | Mars    | Red    | 9999999999 |
+| Rajnikanth            | Delhi    | Earth   | Blue   | 9999999999 |
+| Rajnikanth            | Delhi    | Moon    | White  |   99999999 |
+| Rajnikanth            | Delhi    | Cap     | Red    |       0.05 |
+| Rajnikanth            | Delhi    | Shoe    | Green  |       0.05 |
+| Rajnikanth            | Delhi    | T Shirt | Green  |       0.05 |
+| Rajnikanth            | Delhi    | Ball    | Red    |       0.05 |
+| Rajnikanth            | Delhi    | Ribbon  | Yellow |       0.05 |
+| Zubeen Barua          | Guwahati | Ribbon  | Yellow |         50 |
++-----------------------+----------+---------+--------+------------+
+17 rows in set (0.00 sec)*/
+
