@@ -30,11 +30,9 @@
       
       <nav>
         <ul>
-          <li class="current"><a href="main_page.php" class="m1">Main Page</a></li>
-          <li><a href="about-us.html" class="m2">About Us</a></li>
-          <li><a href="articles.html" class="m3">Our Articles</a></li>
-          <li><a href="contact-us.html" class="m4">Contact Us</a></li>
-          <li class="last"><a href="sitemap.html" class="m5">Sitemap</a></li>
+          <li class="current"><a href="index1.php" class="m1">Home Page</a></li>
+          <li><a href="about-us.php" class="m2">About Us</a></li>
+          <li><a href="contact-us.php" class="m4">Contact Us</a></li>
         </ul>
 		<h2>Welcome to Course Resource Management </h2>
       </nav>
@@ -58,7 +56,14 @@
         <li><span><a href="#">Descriptions</a></span></li>
         <li><span><a href="#">Administrators</a></span></li>
         <li><span><a href="#">Basic Information</a></span></li>
-		<li><span><a href="list_message.php">Message</a></span></li>
+		<li><span><a href="list_message.php">Message
+		<?php
+			$webmail_id = $_SESSION['webmail_id'];
+			$total = total_unread_messages($webmail_id);
+			echo"(".$total.")";
+		?>
+		
+		</a></span></li>
         <li><span><a href="#">Vacancies</a></span></li>
         <li class="last"><span><a href="logout.php">Logout</a></span></li>
       </ul>
@@ -101,15 +106,9 @@
     </section>
   </div>
 </div>
-<footer>
-  <div class="footerlink">
-    <p class="lf">Copyright &copy; 2010 <a href="#">SiteName</a> - All Rights Reserved</p>
-    <p class="rf"><a href="http://all-free-download.com/free-website-templates/">Free CSS Templates</a> by <a href="http://in.linkedin.com/in/venkatsai101">Venkat Sai</a></p>
-    <div style="clear:both;"></div>
-  </div>
-</footer>
+
 <script type="text/javascript"> Cufon.now(); </script>
 <!-- END PAGE SOURCE -->
-<div align=center>This template  downloaded form <a href='http://all-free-download.com/free-website-templates/'>free website templates</a></div></body>
+
 </html>
 <?php include("includes/footer.php"); ?>

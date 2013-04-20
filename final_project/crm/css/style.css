@@ -41,6 +41,7 @@ aside {
 	width:219px;
 	float:left;
 	margin-right:30px;
+	font-size: 20px;
 	padding:5px 0 0 0;
 }
 .fleft {
@@ -583,6 +584,7 @@ footer {
 	background:url(../images/footer-bg.png) no-repeat center top;
 	margin-top:-120px;
 	min-width:940px;
+	
 }
 footer .footerlink {
 	margin:0 auto;
@@ -590,7 +592,7 @@ footer .footerlink {
 	height:60px;
 	padding-top:60px;
 	color:#454545;
-	font-size:.785em;
+	font-size:1em;
 	line-height:1.429em;
 }
 .footerlink p {
@@ -623,4 +625,52 @@ footer .footerlink {
 }
 a {
 	outline:none;
+}
+/*
+#message tr .high:hover {
+		background-color:#b0c4de;
+}
+*/
+
+.high{
+	cursor: pointer; 
+	cursor: hand;
+}
+.high .sender_name{
+	float:left;
+	color:blue;
+}
+.high .time_stamp{
+	text-align:right;
+}
+.high:hover
+{
+	background-color:#E3E3E3;
+}
+
+
+.reply_name{
+	color:blue;
+}
+
+#myTextarea{
+	width:260px;
+	height:100px;
+}
+
+.error_message{
+	color:white;
+}
+#td_element{
+       border:none;
+}
+#search_name{
+       height:30px;
+}
+#descr{
+       height:30px;
+}
+#text_area{
+       height:50px;
+	   width:500px;
 }

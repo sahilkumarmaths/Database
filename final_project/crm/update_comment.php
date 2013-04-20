@@ -5,14 +5,9 @@
 <?php
 $comment_id=$_GET["id"];
 $comment_text = $_GET["text"];
-//print '<script type="text/javascript">';
-//print 'alert("The email address registered")';
-//print '</script>';  
-
 $query = "UPDATE comments
 			SET comment_text = '{$comment_text}'
 			where comment_id = '{$comment_id}'";
 mysql_query($query);
 //confirm_query($result_set);
-echo $comment_text;
 ?>

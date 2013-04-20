@@ -30,7 +30,7 @@
 
 <html lang="en">
 <head>
-<title>Student's Site | Articles</title>
+<title>CRM</title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="css/reset.css" type="text/css" media="all">
 <link rel="stylesheet" href="css/style.css" type="text/css" media="all">
@@ -54,18 +54,21 @@
     <div class="container">
       <h1><a href="#">Student's site</a></h1>
       <nav>
-        <ul>
-          <li><a href="main_page.php" class="m1">Home Page</a></li>
+		<ul>
+          <li class="current"><a href="index.php" class="m1">Home Page</a></li>
+		  <li><span><a href="list_message.php" class="m3">Message
+		<?php
+			$webmail_id = $_SESSION['webmail_id'];
+			$total = total_unread_messages($webmail_id);
+			echo"(".$total.")";
+		?>
+		</a></span></li>
+          <li><a href="about-us.php" class="m2">About Us</a></li>
+          <li><a href="contact-us.php" class="m4">Contact Us</a></li>
           
         </ul>
       </nav>
-      <form action="#" id="search-form">
-        <fieldset>
-          <div class="rowElem">
-            <input type="text">
-            <a href="#">Search</a></div>
-        </fieldset>
-      </form>
+      
     </div>
   </header>
   <div class="container">
@@ -74,34 +77,17 @@
       <ul class="categories">
         <li><span><a href="courses.php">Courses</a></span></li>
         <li><span><a href="profile.php">Personal Profile</a></span></li>
-        <li><span><a href="#">Teachers</a></span></li>
-        <li><span><a href="#">Descriptions</a></span></li>
-        <li><span><a href="#">Administrators</a></span></li>
-        <li><span><a href="#">Basic Information</a></span></li>
-        <li><span><a href="#">Vacancies</a></span></li>
+		<li><span><a href="list_message.php">Message
+		<?php
+			$webmail_id = $_SESSION['webmail_id'];
+			$total = total_unread_messages($webmail_id);
+			echo"(".$total.")";
+		?>
+		</a></span></li>
         <li class="last"><span><a href="logout.php">Logout</a></span></li>
       </ul>
-      <form action="#" id="newsletter-form">
-        <fieldset>
-          <div class="rowElem">
-            <h2>Newsletter</h2>
-            <input type="email" value="Enter Your Email Here" onFocus="if(this.value=='Enter Your Email Here'){this.value=''}" onBlur="if(this.value==''){this.value='Enter Your Email Here'}" >
-            <div class="clear"><a href="#" class="fleft">Unsubscribe</a><a href="#" class="fright">Submit</a></div>
-          </div>
-        </fieldset>
-      </form>
-      <h2>Fresh <span>News</span></h2>
-      <ul class="news">
-        <li><strong>June 30, 2010</strong>
-          <h4><a href="#">Sed ut perspiciatis unde</a></h4>
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque. </li>
-        <li><strong>June 14, 2010</strong>
-          <h4><a href="#">Neque porro quisquam est</a></h4>
-          Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit consequuntur magni. </li>
-        <li><strong>May 29, 2010</strong>
-          <h4><a href="#">Minima veniam, quis nostrum</a></h4>
-          Uis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae. </li>
-      </ul>
+      
+      
     </aside>
     <section id="content">
      
@@ -120,26 +106,14 @@
             echo $course["syllabus"];
 			echo "</li>";
          }
-		?> 
-		 <li>
-            <h4><a href="#">Article 2</a></h4>
-            Eusus consequam vitae habitur amet nullam vitae condis phasellus sed justo. Orcivel mollis intesque eu sempor ridictum a non laorem lacingilla wisi.
-			</li>
-          
+		?>   
         </ul>
       </div>
     </section>
   </div>
 </div>
-<footer>
-  <div class="footerlink">
-    <p class="lf">Copyright &copy; 2010 <a href="#">SiteName</a> - All Rights Reserved</p>
-    <p class="rf"><a href="http://all-free-download.com/free-website-templates/">Free CSS Templates</a> by <a href="http://www.templatemonster.com/">TemplateMonster</a></p>
-    <div style="clear:both;"></div>
-  </div>
-</footer>
+
 <script type="text/javascript"> Cufon.now(); </script>
 <!-- END PAGE SOURCE -->
-<div align=center>This template  downloaded form <a href='http://all-free-download.com/free-website-templates/'>free website templates</a></div></body>
 </html>
 <?php include("includes/footer.php"); ?>

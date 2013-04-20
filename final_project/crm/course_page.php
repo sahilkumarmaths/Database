@@ -40,16 +40,23 @@
 
 <html lang="en">
 <head>
-<title>Student's Site</title>
+<title>CRM</title>
 <meta charset="utf-8">
 <link rel="stylesheet" href="css/reset.css" type="text/css" media="all">
 <link rel="stylesheet" href="css/style.css" type="text/css" media="all">
+    <!-- Bootstrap -->
+<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <script type="text/javascript" src="js/jquery-1.4.2.min.js" ></script>
 <script type="text/javascript" src="js/cufon-yui.js"></script>
 <script type="text/javascript" src="js/cufon-replace.js"></script>
 <script type="text/javascript" src="js/Myriad_Pro_300.font.js"></script>
 <script type="text/javascript" src="js/Myriad_Pro_400.font.js"></script>
 <script type="text/javascript" src="js/script.js"></script>
+
+    <!-- Bootstrap -->
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+
 <!--[if lt IE 7]>
 <link rel="stylesheet" href="css/ie6.css" type="text/css" media="screen">
 <script type="text/javascript" src="js/ie_png.js"></script>
@@ -65,7 +72,7 @@
       
       <nav>
         <ul>
-		  <li><a href="main_page.php" class="m1">Home Page</a></li>
+		  <li><a href="courses.php" class="m1">Home Page</a></li>
           <li class="current"><?php echo "<a href=\"course_page.php?course_id=".urlencode($sel_course_id)."&semester=".urlencode($sel_semester)."&abs_year=".urlencode($sel_abs_year)." \" class=\"m1\" > Course Page </a> " ; ?></li>
           <li><?php echo "<a href=\"course_files.php?course_id=".urlencode($sel_course_id)."&semester=".urlencode($sel_semester)."&abs_year=".urlencode($sel_abs_year)." \" class=\"m2\" > Files </a> " ; ?></li>
           <li><?php echo "<a href=\"course_threads.php?course_id=".urlencode($sel_course_id)."&semester=".urlencode($sel_semester)."&abs_year=".urlencode($sel_abs_year)." \" class=\"m3\" > Threads </a> " ; ?></li>
@@ -75,13 +82,7 @@
 		<h2><?php echo $course_entity['course_name']. " - ". $course_entity['course_id']   ?> </h2>
 		
       </nav>
-      <form action="#" id="search-form">
-        <fieldset>
-          <div class="rowElem">
-            <input type="text">
-            <a href="#">Search Course</a></div>
-        </fieldset>
-      </form>
+      
     </div>
   </header>
   <div class="container">
@@ -90,60 +91,103 @@
       <ul class="categories">
         <li><span><a href="courses.php">Courses</a></span></li>
         <li><span><a href="profile.php">Personal Profile</a></span></li>
-        <li><span><a href="#">Course Info</a></span></li>
-        <li><span><a href="#">Description</a></span></li>
-        <li><span><a href="#">Administrators</a></span></li>
-        <li><span><a href="#">Basic Information</a></span></li>
-        <li><span><a href="#">Vacancies</a></span></li>
-        <li class="last"><span><a href="logout.php">Logout</a></span></li>
+        <li><span><?php echo "<a href=\"quiz.php?course_id=".urlencode($sel_course_id)."&semester=".urlencode($sel_semester)."&abs_year=".urlencode($sel_abs_year)." \" class=\"m3\" > Quiz </a> " ; ?></span></li>
+        <li><span><a href="list_message.php">Message
+		<?php
+			$webmail_id = $_SESSION['webmail_id'];
+			$total = total_unread_messages($webmail_id);
+			echo"(".$total.")";
+		?>
+		</a></span></li>
+		<li class="last"><span><a href="logout.php">Logout</a></span></li>
       </ul>
-      <h2>Latest <span>Updates</span></h2>
+
+
+    </aside>
+    <section id="content">
+     
+      <div class="inside">
+		<?php
+		if($_SESSION['person_type'] == 'instructor')
+		{
+				?>
+				<a href="#news_modal" role="button" class="btn" data-toggle="modal">Update news</a>
+		
+					<div id="news_modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+					<div class="modal-body">	
+						<?php echo "<form action=\"course_page.php?course_id=".urlencode($sel_course_id)."&semester=".urlencode($sel_semester)."&abs_year=".urlencode($sel_abs_year)." \"    " ; ?>
+					method="post" enctype="multipart/form-data" >
+					<table>
+
+						<tr><td >News name</td><td><textarea  name="news_name" style='height:30px;width:400px;' cols='80' rows='1'></textarea></td></tr>
+						<tr><td >Content </td><td><textarea name="news_content" style='height:100px;width:400px;' cols='80' rows='5'></textarea></td></tr>
+
+					</table>
+					</div>
+						<div class="modal-footer">
+						<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+						<input  class="btn btn-primary" type="submit" name="submit" value="Submit">
+						</div>
+						 </form>
+					</div>
+				
+				<?php
+		}
+		?>
+	<?php
+			//insert_thread($sel_course_id,$sel_semester,$sel_abs_year);
+			if (isset($_POST['submit']))
+			{
+				//FINAL
+				$query = "INSERT INTO `crm_db`.`news_feed` (`nid`, `news_text`, `webmail`, `news_content`) 
+				VALUES (NULL, '".$_POST['news_name']."','".$_SESSION['webmail_id']."','".$_POST['news_content']."'); ";
+
+				 //INSERT INTO `news_feed`(`nid`, `news_text`, `webmail`, `date`) VALUES (NULL,'test','srs',NOW())
+				$res1=mysql_query($query);
+				
+				$get_nid="SELECT nid FROM news_feed order by nid desc LIMIT 0,1";
+				
+				$result_set=mysql_query($get_nid);
+				while ($news = mysql_fetch_array($result_set)) 
+					  {			
+						$nid=$news['nid'];
+					  }
+				
+				$query3="INSERT INTO `crm_db`.`news_course` (`nid`, `course_id`, `semester`, `year`) 
+				VALUES ('".$nid."', '".$sel_course_id."','".$sel_semester."','".$sel_abs_year."'); ";
+				
+				print '<script type="text/javascript">';
+				print 'alert("The email addre is already registered")';
+				print '</script>';  
+				
+				
+				$res3=mysql_query($query3);
+				
+				unset(  $_POST['submit'] );
+				$new_page = "course_page.php?course_id=".urlencode($sel_course_id)."&semester=".urlencode($sel_semester)."&abs_year=".urlencode($sel_abs_year);
+				redirect_to($new_page);
+			}
+
+		?>
+      <h3>Latest <span>Updates</span></h3>
       <ul class="news">
 	  
 	  <?php
 			while ($news = mysql_fetch_array($course_news)) 
 			  {			
-				echo "<li><strong>{$news['news_text']}</strong></li>";
-				
+				echo "<li>{$news['date']}
+						<h4><a href='#'>{$news['news_text']}</a></h4>
+						{$news['news_content']}</li>
+						";
+
 			  }
 	?>
       </ul>
-    </aside>
-    <section id="content">
-     
-      <div class="inside">
-		<p> Course Instructor : </p>
-	
-			
-		
-        <h2>Recent <span>Files</span></h2>	
-        <ul class="list">
-          <li><span><img src="images/icon1.png"></span>
-            <h4>About Template</h4>
-            <p>Eusus consequam vitae habitur amet nullam vitae condis phasellus sed justo. Orcivel mollis intesque eu sempor ridictum a non laorem lacingilla wisi.</p>
-          </li>
-          <li><span><img src="images/icon2.png"></span>
-            <h4>Branch Office</h4>
-            <p>Eusus consequam vitae habitur amet nullam vitae condis phasellus sed justo. Orcivel mollis intesque eu sempor ridictum a non laorem lacingilla wisi.</p>
-          </li>
-          <li class="last"><span><img src="images/icon3.png"></span>
-            <h4>Student’s Time</h4>
-            <p>Eusus consequam vitae habitur amet nullam vitae condis phasellus sed justo. Orcivel mollis intesque eu sempor ridictum a non laorem lacingilla wisi.</p>
-          </li>
-        </ul>
-        
 	 </div>
     </section>
   </div>
 </div>
-<footer>
-  <div class="footerlink">
-    <p class="lf">Copyright &copy; 2010 <a href="#">SiteName</a> - All Rights Reserved</p>
-    <p class="rf"><a href="http://all-free-download.com/free-website-templates/">Free CSS Templates</a> by <a href="http://in.linkedin.com/in/venkatsai101">Venkat Sai</a></p>
-    <div style="clear:both;"></div>
-  </div>
-</footer>
 <script type="text/javascript"> Cufon.now(); </script>
 <!-- END PAGE SOURCE -->
-<div align=center>This template  downloaded form <a href='http://all-free-download.com/free-website-templates/'>free website templates</a></div></body>
 </html>
+<?php include("includes/footer.php"); ?>

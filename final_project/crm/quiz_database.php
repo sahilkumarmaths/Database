@@ -17,12 +17,14 @@ $h=$_GET["h"];
 $i=$_GET["i"];
 $j=$_GET["j"];
 $k=$_GET["k"];
+$cid=$_GET["cid"];
 
-$query = "INSERT INTO quiz(webmail_id, first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, tenth, total) VALUES ('$webmail_id','$a','$b','$c','$d','$e','$f','$g','$h','$i','$j','$k')";
+$query = "INSERT INTO quiz(webmail_id, first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, tenth, total,course_id) VALUES ('$webmail_id','$a','$b','$c','$d','$e','$f','$g','$h','$i','$j','$k','$cid')";
+
 
 $result_set = mysql_query($query);
 confirm_query($result_set);
 
-echo "";
+
 
 ?>

@@ -1,0 +1,40 @@
+
+
+Hello,
+
+It is to inform you that CS345 Mid-term Exam is scheduled on 25/2/2013.
+
+Time: Implementation: 2-4PM, evaluation 4 onwards.
+Value: Respective Lab
+
+Nature of the question:
+
+Given an ER diagram, you need to build a database using MYSQL and perform
+a set of queries.
+
+You should keep your machine ready before the exam starts. Net connection
+will be cutoff during exam. However, reading materials including soft-copy
+will be allowed.
+
+Marks:
+Building Database: 10
+Inserting tuples correctly(a defined set of tuples will be supplied): 5
+Query formation (5 queries): 5 marks for each question. = 25
+Two viva questions: 5 marks each =10
+----------------------------------------------------
+                            Total: 50
+
+Penalty for unfair means=-10 (Your answer becomes void and awarded -10 as
+penalty)
+The only unfair means considered in this test is discussion with your
+peers in any form. You are allowed to collect and store to your
+machine/bring any printed material. But, no discussion. Mobile is strictly
+prohibited. No form of warning or justification will be required for
+awarding -10. If concerned TA finds you engaging in discussion, he/she can
+award you -10 without any justification. However, you can discuss your
+doubts/confusion
+with your concerned TA and Instructors.
+
+
+
+-ranbir

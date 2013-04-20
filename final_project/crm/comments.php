@@ -50,16 +50,22 @@
 
 <html lang="en">
 <head>
-<title>Thread | Comments</title>
-<meta charset="utf-8">
+<title>CRM</title><meta charset="utf-8">
+  <!-- Bootstrap -->
+<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+
 <link rel="stylesheet" href="css/reset.css" type="text/css" media="all">
 <link rel="stylesheet" href="css/style.css" type="text/css" media="all">
+<link rel="stylesheet" href="css/table_styles.css" type="text/css" media="all">
 <script type="text/javascript" src="js/jquery-1.4.2.min.js" ></script>
 <script type="text/javascript" src="js/cufon-yui.js"></script>
 <script type="text/javascript" src="js/cufon-replace.js"></script>
 <script type="text/javascript" src="js/Myriad_Pro_300.font.js"></script>
 <script type="text/javascript" src="js/Myriad_Pro_400.font.js"></script>
 <script type="text/javascript" src="js/script.js"></script>
+    <!-- Bootstrap -->
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
 
@@ -80,29 +86,23 @@ xmlhttp.send();
 }
 
 
-function edit_comment(comment_id)
-{
-var url="edit_box.php?id="+comment_id.toString();
-loadXMLDoc(url,function()
-  {
-  if (xmlhttp.readyState==4 && xmlhttp.status==200)
-    {
-    document.getElementById("myDiv").innerHTML=xmlhttp.responseText;
-    }
-  });
-}
-
 function update_comment(comment_id)
 {
-	var url="update_comment.php?id="+comment_id.toString()+"&text="+document.getElementById("myTextarea").value;
+	var tid = "<?php echo $sel_thread_id; ?>";
+	var comment_text_id = "myTextarea"+comment_id.toString();
+	//alert(comment_text_id);
+	var comment_text = document.getElementById(comment_text_id).value;
+	//alert(comment_text);
+	var url="update_comment.php?id="+comment_id.toString()+"&text="+comment_text;
+	
+	var redirection = "comments.php?thread_id="+tid;
 	loadXMLDoc(url,function()
 	  {
 	  if (xmlhttp.readyState==4 && xmlhttp.status==200)
 		{
 		var field = "edited_comment"+comment_id.toString();
-		alert(field);
-		document.getElementById(field).innerHTML=xmlhttp.responseText;
-		document.getElementById("myDiv").innerHTML="";
+		//alert(redirection);
+		window.location=redirection;
 		}
 	  });
 }
@@ -136,53 +136,31 @@ function delete_comment(comment_id)
     <div class="container">
       <nav>
         <ul>
-		  <li><a href="main_page.php" class="m1">Home Page</a></li>
+		  <li><a href="courses.php" class="m1">Home Page</a></li>
         </ul>
 		
       </nav>
-      <form action="#" id="search-form">
-        <fieldset>
-          <div class="rowElem">
-            <input type="text">
-            <a href="#">Search</a></div>
-        </fieldset>
-      </form>
+      
     </div>
   </header>
   <div class="container">
     <aside>
-      <h3>Categories</h3>
+      
+       <h3>Categories</h3>
       <ul class="categories">
-         <li><span><a href="courses.php">Courses</a></span></li>
+        <li><span><a href="courses.php">Courses</a></span></li>
         <li><span><a href="profile.php">Personal Profile</a></span></li>
-        <li><span><a href="#">Course Info</a></span></li>
-        <li><span><a href="#">Description</a></span></li>
-        <li><span><a href="#">Administrators</a></span></li>
-        <li><span><a href="#">Basic Information</a></span></li>
-        <li><span><a href="#">Vacancies</a></span></li>
+		<li><span><a href="list_message.php">Message
+		<?php
+			$webmail_id = $_SESSION['webmail_id'];
+			$total = total_unread_messages($webmail_id);
+			echo"(".$total.")";
+		?>
+		</a></span></li>
         <li class="last"><span><a href="logout.php">Logout</a></span></li>
       </ul>
-      <form action="#" id="newsletter-form">
-        <fieldset>
-          <div class="rowElem">
-            <h2>Newsletter</h2>
-            <input type="email" value="Enter Your Email Here" onFocus="if(this.value=='Enter Your Email Here'){this.value=''}" onBlur="if(this.value==''){this.value='Enter Your Email Here'}" >
-            <div class="clear"><a href="#" class="fleft">Unsubscribe</a><a href="#" class="fright">Submit</a></div>
-          </div>
-        </fieldset>
-      </form>
-      <h2>Fresh <span>News</span></h2>
-      <ul class="news">
-        <li><strong>June 30, 2010</strong>
-          <h4><a href="#">Sed ut perspiciatis unde</a></h4>
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque. </li>
-        <li><strong>June 14, 2010</strong>
-          <h4><a href="#">Neque porro quisquam est</a></h4>
-          Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit consequuntur magni. </li>
-        <li><strong>May 29, 2010</strong>
-          <h4><a href="#">Minima veniam, quis nostrum</a></h4>
-          Uis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae. </li>
-      </ul>
+     
+      
     </aside>
     <section id="content">
 	
@@ -191,11 +169,12 @@ function delete_comment(comment_id)
         <h2><?php echo $thread_name. " - ". $sel_thread_id  ?>  </h2>		
         
 		
-		<table id = "details" >
+		<!-- <table id = "details" > -->
+		<table id="hor-minimalist-b" summary="Comments">
 			<tr><span>
 				<th>S.No.</th>
 				<th>Comment </th>
-				<th>Author <br/><br/></th>
+				<th>Author </th><th></th><th></th><th><br/><br/></th>
 				</span>
 			</tr>
 			<?php 
@@ -211,10 +190,30 @@ function delete_comment(comment_id)
 							echo "<td><img src='images/del-4.png' alt=\"delete\" onclick = \"delete_comment({$comment['comment_id']})\" width = '20' height ='20'>";
 							if($comment["webmail_id"]==$webmail_id)
 							{
-								echo "<img src='images/edit-1.png' alt=\"Edit\" onclick = \"edit_comment({$comment['comment_id']})\" width = '25' height ='25'  >";
+							echo "<a href='#edit_comment_modal{$comment['comment_id']}' role='button' class='btn' data-toggle='modal'><img src='images/edit-1.png' alt=\"Edit\" width = '15' height ='15'  ></a>";
+
+						$modal_str = "		
+							<td id='td_element'>
+								<div id='edit_comment_modal{$comment['comment_id']}' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true'>
+								<div class='modal-body'>
+								<textarea id='myTextarea{$comment['comment_id']}' style='height:300px;width:500px;'>{$comment["comment_text"]}</textarea>
+								<div class='modal-footer'>
+								<button class='btn' data-dismiss='modal' aria-hidden='true'>Close</button>
+								<button class='btn btn-primary' type='button' onclick='update_comment({$comment['comment_id']})'>Edit</button>
+								</div>
+								</div>
+							<br/><br/><td/>
+								";
+
+						echo $modal_str;		
 							}
 							echo "<br/><br/></td>";
 					}
+					else
+						{
+							echo"<td> </td>
+							<td> <br/><br/></td>";
+						}
 					
 					echo "</span></tr>";
 					echo "<div id=\"myDiv\"></div>";
@@ -222,17 +221,17 @@ function delete_comment(comment_id)
 				$i++;
 			 }
 			?> 
-        </table>
-		
-		 	<br/>
+		</table>
 		   <?php echo "<form action=\"comments.php?thread_id=".urlencode($sel_thread_id)." \"    " ; ?>
 				method="post" enctype="multipart/form-data" >
 				
-				<textarea cols="81" rows="1" name ="comment_text" ></textarea>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<textarea id="text_area" rows="4" cols="100" name ="comment_text" ></textarea>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type="submit" name="submit" value="Comment">
 				
 			</form>
-		
 			 <?php
 				if (isset($_POST['submit']))
 				{
@@ -249,15 +248,9 @@ function delete_comment(comment_id)
     </section>
   </div>
 </div>
-<footer>
-  <div class="footerlink">
-    <p class="lf">Copyright &copy; 2010 <a href="#">SiteName</a> - All Rights Reserved</p>
-    <p class="rf"><a href="http://all-free-download.com/free-website-templates/">Free CSS Templates</a> by <a href="http://www.templatemonster.com/">TemplateMonster</a></p>
-    <div style="clear:both;"></div>
-  </div>
-</footer>
+
 <script type="text/javascript"> Cufon.now(); </script>
 <!-- END PAGE SOURCE -->
-<div align=center>This template  downloaded form <a href='http://all-free-download.com/free-website-templates/'>free website templates</a></div></body>
+
 </html>
 <?php include("includes/footer.php"); ?>

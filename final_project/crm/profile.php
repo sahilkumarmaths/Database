@@ -4,14 +4,25 @@
 <?php confirm_logged_in(); ?>
 
 <?php
+	if($_SESSION['person_type']=='student')
+	{
+		$name	=	$_SESSION['name'] ;
+		$webmail_id = $_SESSION['webmail_id'];
+		$roll_no =	$_SESSION['roll_no'] ;
+		$semester = $_SESSION['semester'];
+		$abs_year = $_SESSION['abs_year'] ;
+		$abs_semester =	$_SESSION['abs_semester'];
+		$person_type = $_SESSION['person_type'];
+		$course_set = get_courses_for_student($webmail_id);
+	}
 	
-	$name	=	$_SESSION['name'] ;
-	$webmail_id = $_SESSION['webmail_id'];
-	$roll_no =	$_SESSION['roll_no'] ;
-	$semester = $_SESSION['semester'];
-	$abs_year = $_SESSION['abs_year'] ;
-	$abs_semester =	$_SESSION['abs_semester'];
-	$person_type = $_SESSION['person_type'];
+	else if($_SESSION['person_type']=='instructor')
+	{
+		$name	=	$_SESSION['name'] ;
+		$webmail_id = $_SESSION['webmail_id'];
+		$instructor_id = $_SESSION['instructor_id'];
+		$course_set = get_courses_for_instructor($webmail_id);
+	}
 ?>
 <html lang="en">
 <head>
@@ -40,20 +51,19 @@
       <h1><a href="#">Student's site</a></h1>
       <nav>
         <ul>
-          <li><a href="index1.php" class="m1">Home Page</a></li>
-          <li><a href="about-us.html" class="m2">About Us</a></li>
-          <li><a href="articles.html" class="m3">Our Articles</a></li>
-          <li><a href="contact-us.html" class="m4">Contact Us</a></li>
-          <li class="last"><a href="sitemap.html" class="m5">Sitemap</a></li>
+         <li class="current"><a href="courses.php" class="m1">Home Page</a></li>
+		 <li><span><a href="list_message.php" class="m3">Message
+		<?php
+			$webmail_id = $_SESSION['webmail_id'];
+			$total = total_unread_messages($webmail_id);
+			echo"(".$total.")";
+		?>
+		</a></span></li>
+          <li><a href="about-us.php" class="m2">About Us</a></li>
+          <li><a href="contact-us.php" class="m4">Contact Us</a></li>
         </ul>
       </nav>
-      <form action="#" id="search-form">
-        <fieldset>
-          <div class="rowElem">
-            <input type="text">
-            <a href="#">Search</a></div>
-        </fieldset>
-      </form>
+		
     </div>
   </header>
   <div class="container">
@@ -63,75 +73,102 @@
         <li><span><a href="courses.php">Courses</a></span></li>
         <li><span><a href="profile.php">Personal Profile</a></span></li>
         <li><span><a href="change_password.php">Change password</a></span></li>
-        <li><span><a href="#">Descriptions</a></span></li>
-        <li><span><a href="#">Administrators</a></span></li>
-        <li><span><a href="#">Basic Information</a></span></li>
-        <li><span><a href="#">Vacancies</a></span></li>
+		<li><span><a href="list_message.php">Message
+		<?php
+			$webmail_id = $_SESSION['webmail_id'];
+			$total = total_unread_messages($webmail_id);
+			echo"(".$total.")";
+		?>
+		</a></span></li>
         <li class="last"><span><a href="logout.php">Logout</a></span></li>
       </ul>
-      <form action="#" id="newsletter-form">
-        <fieldset>
-          <div class="rowElem">
-            <h2>Newsletter</h2>
-            <input type="email" value="Enter Your Email Here" onFocus="if(this.value=='Enter Your Email Here'){this.value=''}" onBlur="if(this.value==''){this.value='Enter Your Email Here'}" >
-            <div class="clear"><a href="#" class="fleft">Unsubscribe</a><a href="#" class="fright">Submit</a></div>
-          </div>
-        </fieldset>
-      </form>
-      <h2>Fresh <span>News</span></h2>
-      <ul class="news">
-        <li><strong>June 30, 2010</strong>
-          <h4><a href="#">Sed ut perspiciatis unde</a></h4>
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque. </li>
-        <li><strong>June 14, 2010</strong>
-          <h4><a href="#">Neque porro quisquam est</a></h4>
-          Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit consequuntur magni. </li>
-        <li><strong>May 29, 2010</strong>
-          <h4><a href="#">Minima veniam, quis nostrum</a></h4>
-          Uis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae. </li>
-      </ul>
+      
     </aside>
     <section id="content">
      
       <div class="inside">
         <h2>PERSONAL INFORMATION.. </h2>
 	
-		<table id="details">
-			<tr><span>
-				<td >Name : </td>
-				<td><?php echo $name; echo "<br/><br/>" ?></td>
-			</span></tr>
-			<tr class="alt" ><span>
-				<td >Webmail_id : </td>
-				<td><?php echo $webmail_id; echo "<br/><br/>" ?></td>
-			</span></tr>
-			<tr ><span>
-				<td >Roll number : </td>
-				<td><?php echo $roll_no; echo "<br/><br/>" ?></td>
-			</span></tr>
-			<tr class="alt" ><span>
-				<td >Semester : </td>
-				<td><?php echo $semester; echo "<br/><br/>" ?></td>
-			</span></tr>
-			<tr><span>
-				<td >Year : </td>
-				<td><?php echo $abs_year ; echo "<br/><br/>" ?></td>
-			</span></tr>         
-        </table>
-
+			<?php 
+			if($_SESSION['person_type']== 'student')
+				display_person_info($name, $webmail_id, $roll_no, $semester, $abs_year); 
+			else if($_SESSION['person_type']== 'instructor')
+				display_person_info($name, $webmail_id, NULL, NULL, NULL, $instructor_id); 
+			?>
+			<br /><br />
+		<h2> A Track of Your Files : </h2>
+		<br />
+			<ul class="articles">
+			
+			 <table id="details1">
+				<?php
+					//$file_upload_set = get_file_uploads_of_course($sel_course_id, $sel_semester, $sel_abs_year);
+					echo "<tr><span>";
+					echo "<td> Name </td>";
+					echo "<td> Description </td>";
+					echo "<td> Course </td>";
+					echo "<td> Time </td>";
+					echo "</span></tr>";
+				while ($course = mysql_fetch_array($course_set)) 
+				{
+					$sel_course_id = $course["course_id"];
+					$sel_semester = $course["semester"];
+					$sel_abs_year = $course["absolute_year"];
+					
+					
+				
+					$file_upload_set = get_search_files($course["course_id"], $course["semester"],$course["absolute_year"],"",$webmail_id,"");
+					
+					if($file_upload_set)
+					{
+						while ($file_upload = mysql_fetch_array($file_upload_set)) 
+						{
+							echo "<tr><span>";	
+							$file_id = $file_upload['file_id'];
+							$path = $file_upload['file_data'];
+							$name = $file_upload['file_name'];
+							$description = $file_upload['file_description'];
+							$uploader_id = $file_upload['uploader_id'];
+							$time_stamp = $file_upload['time_stamp'];
+																			
+							echo "<td> <h4><a href=\"{$path}\"> {$name} </a> </h4>";
+							echo '<div style="float:left; padding:px">';
+							echo "<form action=\"course_files.php?course_id=".urlencode($sel_course_id)."&semester=".urlencode($sel_semester)."&abs_year=".urlencode($sel_abs_year)."&delete=".urlencode($file_id)."\" method=\"post\"> <input type=\"submit\" name=\"delete_submit\" value=\"Delete\" /> </form>";
+							echo '</div><div style = "float:left; padding:px">';
+							echo "<form action=\"course_files.php?course_id=".urlencode($sel_course_id)."&semester=".urlencode($sel_semester)."&abs_year=".urlencode($sel_abs_year)."&report=".urlencode($file_id)." \" method=\"post\"> <input type=\"submit\" name=\"report_spam\" value=\"Report Spam\" /> </form>";	
+							echo '</div><br />';
+							$report_spam_set = get_report_of_file($file_id);
+							if(!empty($report_spam_set))
+							{
+								echo "<br /><h5>Spam Reported !!</h5>";
+							}
+							echo "</td>";
+							echo "<td> {$description} </td>";
+							echo "<td> {$sel_course_id} </td>";
+							echo "<td> {$time_stamp} </td>";
+									
+							
+						//	echo "<h4><a href=\"{$path}\"> {$name} </a> <br /> </h4></li>";
+							echo "</span></tr>";
+						}
+						
+					}
+					else
+					{
+						echo "<p>No files have been uploaded yet for this Course !</p>" ;
+					}		
+				}
+		
+				?>
+				
+			  </table>
+			</ul>
       </div>
     </section>
   </div>
 </div>
-<footer>
-  <div class="footerlink">
-    <p class="lf">Copyright &copy; 2010 <a href="#">SiteName</a> - All Rights Reserved</p>
-    <p class="rf"><a href="http://all-free-download.com/free-website-templates/">Free CSS Templates</a> by <a href="http://www.templatemonster.com/">TemplateMonster</a></p>
-    <div style="clear:both;"></div>
-  </div>
-</footer>
+
 <script type="text/javascript"> Cufon.now(); </script>
 <!-- END PAGE SOURCE -->
-<div align=center>This template  downloaded form <a href='http://all-free-download.com/free-website-templates/'>free website templates</a></div></body>
 </html>
 <?php include("includes/footer.php"); ?>

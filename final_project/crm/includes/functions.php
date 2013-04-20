@@ -15,7 +15,120 @@
 			exit;
 		}
 	}
+	function display_person_info($name, $webmail_id, $roll_no = NULL, $semester = NULL, $abs_year = NULL, $instructor_id = NULL)
+	{
+		echo   ' <table id="details1">
+				<tr><span>
+					<td >Name : </td>
+					<td> '.$name.' <br/><br/></td>
+				</span></tr>
+				<tr class="alt" ><span>
+					<td >Webmail_id : </td>
+					<td> '.$webmail_id. '<br/><br/></td>
+				</span></tr>';
+		if($roll_no)	
+		{
+			echo '
+			<tr ><span>
+				<td >Roll number : </td>
+				<td> '.$roll_no.'<br/><br/></td>
+			</span></tr>
+			<tr class="alt" ><span>
+				<td >Semester : </td>
+				<td> '.$semester.'<br/><br/></td>
+			</span></tr>
+			<tr><span>
+				<td >Year : </td>
+				<td> '.$abs_year.'  <br/><br/></td>
+			</span></tr>         
+		   ';
+		}
+		
+		else if($instructor_id)
+		{
+			echo '
+			<tr ><span>
+				<td >Instructor id : </td>
+				<td> '.$instructor_id.'<br/><br/></td>
+			</span></tr>       
+		   ';
+			
+		}	
+		echo '</table>';
+	
+	}
+	
+		
+	function get_answer($qno)
+	{
+				global $connection;
+		$query = "Select * from questions_quiz d ";
+		$query .= "WHERE id = '{$qno}'";
+		
+		$result_set = mysql_query($query, $connection);
+		if($result_set)
+		{
+		while ($file_upload = mysql_fetch_array($result_set)) 
+			{
+				$no = $file_upload['id'];
+				$quest = $file_upload['answer'];				
+				
+				
+				return $quest;
 
+			}
+			return $result_set;
+		}
+		else
+			return NULL;
+	}
+	
+	function fetch_question($qno)
+	{
+		
+		global $connection;
+		$query = "Select * from questions_quiz d ";
+		$query .= "WHERE id = '{$qno}'";
+		
+		$result_set = mysql_query($query, $connection);
+		if($result_set)
+		{
+		while ($file_upload = mysql_fetch_array($result_set)) 
+			{
+				$no = $file_upload['id'];
+				$quest = $file_upload['question'];
+				$op1  = $file_upload['option1'];
+				$op2 = $file_upload['option2'];
+				$op3 = $file_upload['option3'];
+				$op4 = $file_upload['option4'];
+				
+				echo $no;
+				echo ")  ";						
+				echo $quest;
+				echo "<br></br>";
+
+				echo "<input type = \"radio\" id = \"a\" value = \"1\" name = \"quiz\" >";
+				echo $op1;
+				echo "<br></br>";
+				
+				echo "<input type = \"radio\" id = \"a\" value = \"2\" name = \"quiz\" >";
+				echo $op2;
+				echo "<br></br>";
+				
+				echo "<input type = \"radio\" id = \"a\" value = \"3\" name = \"quiz\" >";
+				echo $op3;
+				echo "<br></br>";
+				
+				echo "<input type = \"radio\" id = \"a\" value = \"4\" name = \"quiz\" >";
+				echo $op4;
+				echo "<br></br>";
+						
+			}
+			return $result_set;
+		}
+		else
+			return NULL;
+	}
 	function get_person_entity($table_name, $webmail_id)
 	{
 		global $connection;
@@ -179,11 +292,11 @@
 			return NULL;
 	}
 	
-	function get_uploaders()
+	function get_uploaders($sel_course_id, $sel_semester, $sel_abs_year)
 	{
 		global $connection;
 				
-		$query = "Select * from documents d GROUP BY uploader_id ORDER BY uploader_id ";
+		$query = "Select * from documents d where d.course_id = '{$sel_course_id}' and d.semester='{$sel_semester}' and d.year = '{$sel_abs_year}' GROUP BY uploader_id ORDER BY uploader_id ";
 		
 		$result_set = mysql_query($query, $connection);
 		if($result_set)
@@ -501,7 +614,7 @@
 			}
 			
 			$allowedExts = array("gif", "jpeg", "jpg", "png","pdf","txt","mp4","flv","mpeg","avi","wma","mp3","doc","xlsx","xls");
-			//$extension = end(explode(".", $_FILES["file"]["name"]));
+			$extension = end(explode(".", $_FILES["file"]["name"]));
 			if ((($_FILES["file"]["type"] == "image/gif")
 			|| ($_FILES["file"]["type"] == "image/jpeg") || ($_FILES["file"]["type"] == "image/jpg")|| ($_FILES["file"]["type"] == "image/png") 
 			|| ($_FILES["file"]["type"] == "text/plain")
@@ -509,7 +622,7 @@
 			|| ($_FILES["file"]["type"] == "audio/mp4")	|| ($_FILES["file"]["type"] == "audio/mpeg") ||  ($_FILES["file"]["type"] == "audio/mpeg3") || ($_FILES["file"]["type"] == "audio/x-ms-wma") 
 			|| ($_FILES["file"]["type"] == "application/file") || ($_FILES["file"]["type"] == "application/msword") || ($_FILES["file"]["type"] == "application/vnd.ms-excel") || ($_FILES["file"]["type"] == "application/vnd.ms-powerpoint") || ($_FILES["file"]["type"] == "application/pdf")||($_FILES["file"]["type"] == "application/force-download"))
 			&& ($_FILES["file"]["size"] < 3000000000)	// setting a upload size limit of 1Gb presently
-			)
+			&& in_array($extension, $allowedExts))
 			{
 				if ($_FILES["file"]["error"] > 0)
 				{
@@ -638,17 +751,34 @@
 	 * Function returns the resultset corresponding to the All recent conversations
 	 * sorted by the time stamp
 	 */
-	function get_recent_chat($id_reciever)
-	{
-		global $connection;
-		$query = " select * from ( SELECT * from message where webmail_id_reciever = '{$id_reciever}' order by `time_stamp` desc )X group by X.webmail_id_sender";
-		
-		$result_set = mysql_query($query, $connection);
-		if($result_set)
+		function get_recent_chat($id_reciever)
+		{
+			global $connection;
+			//$query = " select * from ( SELECT * from message where webmail_id_reciever = '{$id_reciever}' order by `time_stamp` desc )X group by X.webmail_id_sender";
+
+			$query = "select * from ( SELECT * from
+			(
+			select * from
+			(
+			SELECT * FROM message WHERE webmail_id_reciever = '{$id_reciever}' ORDER BY `time_stamp` DESC
+			)Y GROUP BY Y.webmail_id_sender
+
+			UNION
+
+			SELECT X.message_id, X.webmail_id_reciever, X.webmail_id_sender, X.message, X.time_stamp, X.reciever_read FROM
+			(
+			SELECT * FROM message WHERE webmail_id_sender = '{$id_reciever}' ORDER BY `time_stamp` DESC
+			)X GROUP BY X.webmail_id_reciever
+			)A
+
+			where A.webmail_id_reciever='{$id_reciever}' order by `time_stamp` desc) Z group by Z.webmail_id_sender ; " ;
+
+			$result_set = mysql_query($query, $connection);
+			if($result_set)
 			return $result_set;
-		else
+			else
 			return NULL;
-	}
+		}
 	
 	/* 
 	 * Sends the message
@@ -669,7 +799,7 @@
 		//$query = " select * from ( SELECT * from news_feed where webmail_id_reciever = '{$id_reciever}' order by `time_stamp` desc )X group by X.webmail_id_sender";
 		$query = "select * from news_feed
 		where nid in 
-		(select nid from news_course th where th.course_id = '{$sel_course_id}' AND th.semester = {$sel_semester} AND th.year = {$sel_abs_year})";
+		(select nid from news_course th where th.course_id = '{$sel_course_id}' AND th.semester = {$sel_semester} AND th.year = {$sel_abs_year}) order by date desc";
 //select * from news_feed
 //where nid in 
 //(select nid from news_course th where th.course_id = 'CS344' AND th.semester = 1 AND th.year = 2013)
@@ -682,4 +812,21 @@
 			
 	}
 	
+		//This funtion displays the alert message box
+	function alert_message($str)
+	{
+		print "<script type=\"text/javascript\">";
+		print "alert(\"" . $str."\")";
+		print "</script>";
+	
+	}
+	//Sends the total number of unread messages
+	function total_unread_messages($reciever_id)
+	{
+		$query = "SELECT count(*) AS count from message where webmail_id_reciever = '".$reciever_id."' and reciever_read = 0";
+		$result_set = mysql_query($query);
+
+		$message_result = mysql_fetch_array($result_set);
+		return $message_result['count'];
+	}
 ?>

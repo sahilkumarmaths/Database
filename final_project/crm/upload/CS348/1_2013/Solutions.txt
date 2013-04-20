@@ -1,0 +1,85 @@
+
+Part 1:
+
+2. Start time : 777	12.695100	10.11.13.34	202.141.80.22	HTTP	672	GET http://www.google.co.in/ HTTP/1.1 
+
+Received response :  866	13.063463	202.141.80.22	10.11.13.34	HTTP	1184	HTTP/1.0 200 OK  (text/html)
+
+
+Time elapsed : 13.063465sec - 12.695100sec = 0.368363sec 
+
+3.
+
+ip address of destinatoin = 202.141.80.22
+ip address of source = 10.11.13.34
+
+
+Part 2:
+packet nos of packets sent from my pc to the url : 6546, 6651, 6656, 6662, 6663
+beginning of the HTTP response message sent : 6668
+
+Used Packets : 
+6546	45.081501	Dell_a6:0c:3d	Enterasy_38:95:19	0x0800	631	IP
+6651	45.873676	Dell_a6:0c:3d	Enterasy_38:95:19	0x0800	631	IP
+6656	45.874469	Dell_a6:0c:3d	Enterasy_38:95:19	0x0800	613	IP
+6662	45.874930	Dell_a6:0c:3d	Enterasy_38:95:19	0x0800	610	IP
+6663	45.875425	Dell_a6:0c:3d	Enterasy_38:95:19	0x0800	610	IP
+1. 
+Source: Dell_a6:0c:3d (f0:4d:a2:a6:0c:3d)
+2.
+Destination: Enterasy_38:95:19 (00:01:f4:38:95:19)
+No.. this is not that.. it is the 
+
+3.  Value - 08 00
+
+
+4. 
+
+Frame Starting from 45 00  --- G starts at 47 45 54..    --- 40 bytes
+
+5.
+
+Source: Enterasy_38:95:19 (00:01:f4:38:95:19)
+Actually, it's the address of 202.141.80.22 server.. 
+
+6.
+Destination: Dell_a6:0c:3d (f0:4d:a2:a6:0c:3d)
+Yes, it is the address of the computer.. 
+
+7.
+frame type - 0x0800
+
+Part 3:
+
+
+
+Part 4:
+Packet considered - 3705
+1. 
+no of fields - 4
+User Datagram Protocol, Src Port: 52975 (52975), Dst Port: domain (53)
+Source port: 52975 (52975)
+Destination port: domain (53)
+Length: 46
+Checksum: 0x8fbc [validation disabled]
+Good Checksum: False
+Bad Checksum: False
+
+2.
+Total Header Length - 8 bytes
+Source port: 52975 (52975)	- 2 bytes
+Destination port: domain (53)	   - 2 bytes
+Length: 46		   -  2 bytes
+Checksum: 0x8fbc [validation disabled]  - 2 bytes
+
+3.
+It is the actual length of the UDP header + UDP payload = 8 bytes + 38 bytes = 46 bytes which is the value in the length field
+
+4.
+Protocol Number for UDP - 0x11 
+			in decimal, it is , 17
+
+5.
+Packets Examined - 3703 and 3704
+In the packet sent from the host - Src Port : 52974,  Dest. Port : 53
+In the packet received as reply --   Src Port : 53 , Dest. Port : 52974
